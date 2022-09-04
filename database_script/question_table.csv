@@ -1,0 +1,6 @@
+id,type,title,description,answer
+1,1,Which team won the 2017 super bowl?,"[""Falcons"", ""Patriots""]",Patriots
+2,1,trivia question 2,"[""q2_ans1"", ""q2_ans2""]",q2_ans1
+3,2,What's your favorite car brand?,"[""Nissan"", ""Honda"", ""Audi"", ""BMW""]",
+4,3,What are the colors do you like?,"[""Red"", ""Blue"", ""Yellow"", ""Green"",""Black"", ""Purple""]",
+5,4,Please tell us a bit about yourself?,"{""headers"": [""Age/Gender"", ""Male"", ""Female""], ""options"":[""<18"", ""18 to 35"", ""35 to 55"", "">55""]}",
