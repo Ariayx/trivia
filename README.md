@@ -99,8 +99,8 @@ put question and answers in request data as a JSON format. If `questionType` is 
 | Column name | type  | description                                                           |
 |-------------|-------|-----------------------------------------------------------------------|
 | answer_id   | long  | The auto generated id, primary key                                    |
-| user_id     | UUID  | user's UUID, Composite Primary Key                                    |
-| question_id | int   | the question id, Composite Primary Key                                |
+| user_id     | UUID  | user's UUID, Composite Primary Key                                    |
+| question_id | int   | the question id, Composite Primary Key                                |
 | header      | text  | the column name in `matrix` type. For other types, the filed is `'#'` |
 | answer      | array | array of chosen texts                                                 |
 
@@ -117,7 +117,12 @@ Change password or url in `src/main/resources/application.properties`
 
 ## Run project
 I'm using IntelliJ IDEA Community Edition. Find file `src/main/java/com/trivia/trivia/TriviaApplication.java` from Project sidebar, right mouse click it and choose `Run` 
+Or, you could try the following command line
+- On Windows: `gradlew.bat bootRun`
+- On Linux/Mac: `./gradlew bootRun`
 
 # Security Concerns
+- There is no authentication module, it will be easy to perform DDoS attack.
+- If using HTTP protocol, it will be easy to decode the protocol
 
 # Scalability
