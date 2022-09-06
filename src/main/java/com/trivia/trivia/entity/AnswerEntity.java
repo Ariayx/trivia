@@ -16,7 +16,7 @@ public class AnswerEntity {
     private UUID userId;
 
     @Column(name="question_id")
-    private int questionId;
+    private long questionId;
 
     @Column(name="header")
     private String header;
@@ -27,7 +27,7 @@ public class AnswerEntity {
     public AnswerEntity(){
     }
 
-    public AnswerEntity(long answerId, UUID userId, int questionId, String header, String[] answer) {
+    public AnswerEntity(long answerId, UUID userId, long questionId, String header, String[] answer) {
         this.answerId = answerId;
         this.userId = userId;
         this.questionId = questionId;
@@ -51,7 +51,7 @@ public class AnswerEntity {
         this.userId = userId;
     }
 
-    public int getQuestionId() {
+    public long getQuestionId() {
         return questionId;
     }
 
