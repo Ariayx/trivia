@@ -25,7 +25,7 @@ def main():
     engine = create_engine('postgresql://postgres:%s@localhost:5432/trivia' % DB_PASSWORD)
     if not database_exists(engine.url):
         create_database(engine.url)
-    df.to_sql('question', engine, index=False, if_exists='replace',
+    df.to_sql('questions', engine, index=False, if_exists='replace',
             dtype={
                       'id': INTEGER,
                       'type': INTEGER,
