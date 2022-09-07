@@ -7,22 +7,38 @@ import java.util.UUID;
 @Table(name="users")
 public class UserEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="uuid")
-    private UUID uuid;
+    @Column(name="userId")
+    public UUID userId;
+
+    @Column(name="answer_question_id")
+    public Long answerQuestionId;
 
     public UserEntity() {
     }
 
-    public UserEntity(UUID uuid) {
-        this.uuid = uuid;
+    public UserEntity(UUID userId) {
+        this.userId = userId;
+        this.answerQuestionId = null;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public UserEntity(UUID userId, Long answerQuestionId) {
+        this.userId = userId;
+        this.answerQuestionId = answerQuestionId;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
+
+    public Long getAnswerQuestionId() {
+        return answerQuestionId;
+    }
+
+    public void setAnswerQuestionId(Long answerQuestionId) {
+        this.answerQuestionId = answerQuestionId;
     }
 }
