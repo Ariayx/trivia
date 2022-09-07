@@ -1,4 +1,4 @@
-id,type,title,description,headers,answer
+id,type,title,options,headers,answer
 1,1,Which team won the 2017 super bowl?,"[""Falcons"", ""Patriots""]",,Patriots
 2,1,trivia question 2,"[""q2_ans1"", ""q2_ans2""]",,q2_ans1
 3,2,What's your favorite car brand?,"[""Nissan"", ""Honda"", ""Audi"", ""BMW""]",,

@@ -6,7 +6,6 @@ import javax.persistence.*;
 @Table(name="questions")
 public class QuestionEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     public Long id;
 
@@ -16,8 +15,8 @@ public class QuestionEntity {
     @Column(name="title")
     public String title;
 
-    @Column(name="description")
-    public String[] description;
+    @Column(name="options")
+    public String[] options;
 
     @Column(name="headers")
     public String[] headers;
@@ -28,18 +27,16 @@ public class QuestionEntity {
     public QuestionEntity() {
     }
 
-    public QuestionEntity(Long id, String type, String title, String[] description, String[] headers, String answer) {
+    public QuestionEntity(Long id, String type, String title, String[] options, String[] headers, String answer) {
         this.id = id;
         this.type = type;
         this.title = title;
-        this.description = description;
+        this.options = options;
         this.headers = headers;
         this.answer = answer;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
     public void setId(Long id) {
         this.id = id;
@@ -61,12 +58,12 @@ public class QuestionEntity {
         this.title = title;
     }
 
-    public String[] getDescription() {
-        return description;
+    public String[] getOptions() {
+        return options;
     }
 
-    public void setDescription(String[] description) {
-        this.description = description;
+    public void setOptions(String[] options) {
+        this.options = options;
     }
 
     public String[] getHeaders() {

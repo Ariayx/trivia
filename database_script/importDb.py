@@ -30,7 +30,7 @@ def main():
                       'id': INTEGER,
                       'type': INTEGER,
                       'title': TEXT,
-                      'description': ARRAY(TEXT),
+                      'options': ARRAY(TEXT),
                       'headers': ARRAY(TEXT),
                       'answer': TEXT
                   })

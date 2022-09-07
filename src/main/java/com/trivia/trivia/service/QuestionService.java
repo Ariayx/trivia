@@ -6,4 +6,5 @@ import java.util.UUID;
 
 public interface QuestionService {
     QuestionEntity getNewQuestion(UUID userId);
+    QuestionEntity getQuestionById(long questionId);
 }
