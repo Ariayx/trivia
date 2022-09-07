@@ -10,25 +10,24 @@ public class AnswerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="answer_id")
-    private long answerId;
+    public long answerId;
 
     @Column(name="user_id")
-    private UUID userId;
+    public UUID userId;
 
     @Column(name="question_id")
-    private long questionId;
+    public long questionId;
 
     @Column(name="header")
-    private String header;
+    public String header;
 
-    @Column(name="answer", columnDefinition = "text[]")
-    private String[] answer;
+    @Column(name="answer")
+    public String answer;
 
     public AnswerEntity(){
     }
 
-    public AnswerEntity(long answerId, UUID userId, long questionId, String header, String[] answer) {
-        this.answerId = answerId;
+    public AnswerEntity(UUID userId, long questionId, String header, String answer) {
         this.userId = userId;
         this.questionId = questionId;
         this.header = header;
@@ -67,11 +66,11 @@ public class AnswerEntity {
         this.header = header;
     }
 
-    public String[] getAnswer() {
+    public String getAnswer() {
         return answer;
     }
 
-    public void setAnswer(String[] answer) {
+    public void setAnswer(String answer) {
         this.answer = answer;
     }
 }
