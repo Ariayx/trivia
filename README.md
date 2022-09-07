@@ -44,26 +44,35 @@ User cannot create or delete questions in database
 
 ### Request a new trivia
 
-GET `/v1/question?site={siteId}&users={uuid}`
+GET `/v1/question/site/{siteName}/user/{userId}`
 
-Server should return a question description, which includes
+If everything goes right, server should return a question description, which includes
 
 ```text
 {
-    site: {siteId},
-    users: {uuid},
     questionId: {questionId},
     questionType: {questionType},
     questionTitle: {questionTitle},
-    questionHeaders: {questionHeaders},
-    questionsItems: [{item1}, {item2},...]
+    questionDescription: [{item1}, {item2},...],
+    questionHeaders: [{item1}, {item2},...]
 }
 ```
 
 If the `questionType` is not `matrix`,  `questionHeaders` will be empty. 
 
+HTTP return codes are:
+
+| Return Code | Name            | Reason                                                                 |
+|-------------|-----------------|------------------------------------------------------------------------|
+| 200         | OK              | When everything goes ok. A question description will also be attached. |
+| 501         | NOT_IMPLEMENTED | When client requests a site other than football                        |
+| 400         | BAD_REQUEST     | When request contains wrong parameter                                  |
+| ???         | ???             | Other default exception handler provided by Spring                     |
+
+
+
 ### Send an answer
-PUT `/v1/answer/?site={siteId}&users={uuid}`
+POST `/v1/question/site/{siteName}/users/{userId}`
 
 put question and answers in request data as a JSON format. If `questionType` is not matrix, the `{header}` should be `#`.
 ```text
@@ -75,35 +84,43 @@ put question and answers in request data as a JSON format. If `questionType` is 
 }
 ```
 
+| Return Code | Name            | Reason                                                                       |
+|-------------|-----------------|------------------------------------------------------------------------------|
+| 200         | OK              | When everything goes ok. A boolean will be returned indicate right or wrong. |
+| 501         | NOT_IMPLEMENTED | When client requests a site other than football                              |
+| 400         | BAD_REQUEST     | When request contains wrong parameter                                        |
+| 409         | CONFLICT        | When question id is not the one user should answer                           |
+| ???         | ???             | Other default exception handler provided by Spring                           |
+
 ### Data Schema
 
 #### Table Question
 
-| Column name | type  | description                 |
-|-------------|-------|-----------------------------|
-| id | int   | unique, Primary key         |
+| Column name | type  | description                                |
+|-------------|-------|--------------------------------------------|
+| id          | long  | unique, Primary key                        |
 | type        | int   | 1: trivia; 2: poll; 3: checkbox; 4: matrix |
-| title       | TEXT  |                             |
-| description | array | array for type 1-3, dictionary for type 4 |
-| headers     | array | Only works in matrix.       |
-| answer      | TEXT  | empty string if no right answer |
+| title       | TEXT  |                                            |
+| options     | array | The answers that user chooses from         |
+| headers     | array | Only works in matrix.                      |
+| answer      | TEXT  | empty string if no right answer            |
 
 ### Table users
 
-| Column name | type | description       |
-| ----------- | ---- |-------------------|
-| uuid        | UUID | the UUID of users |
+| Column name         | type | description                                    |
+|---------------------|------|------------------------------------------------|
+| uuid                | UUID | the UUID of users                              |
+| answer_question_id  | long | The current question_id the user is answering. |
 
 ### Table answers
 
-| Column name | type  | description                                                           |
-|-------------|-------|-----------------------------------------------------------------------|
-| answer_id   | long  | The auto generated id, primary key                                    |
-| user_id     | UUID  | user's UUID, Composite Primary Key                                    |
-| question_id | int   | the question id, Composite Primary Key                                |
-| header      | text  | the column name in `matrix` type. For other types, the filed is `'#'` |
-| answer      | array | array of chosen texts                                                 |
-
+| Column name | type | description                                                           |
+|-------------|------|-----------------------------------------------------------------------|
+| answer_id   | long | The auto generated id, primary key                                    |
+| user_id     | UUID | user's UUID, Composite Primary Key                                    |
+| question_id | long | the question id, Composite Primary Key                                |
+| header      | text | the column name in `matrix` type. For other types, the filed is `'#'` |
+| answer      | text | chosen texts. multiple rows if multiple answers are chosen            |
 
 
 # Build and Run
