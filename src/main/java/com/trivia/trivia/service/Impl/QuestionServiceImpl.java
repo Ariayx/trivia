@@ -27,4 +27,9 @@ public class QuestionServiceImpl implements QuestionService {
         }
         return questionRepository.findById(questionId.longValue());
     }
+
+    @Override
+    public QuestionEntity getQuestionById(long questionId) {
+        return questionRepository.findById(questionId);
+    }
 }
