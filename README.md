@@ -162,6 +162,26 @@ Or, you could try the following command line
 - On Windows: `gradlew.bat bootRun`
 - On Linux/Mac: `./gradlew bootRun`
 
+### Test using Postman
+The default web url is `localhost:8080`
+- To get a question from user `123e4567-e89b-12d3-a456-426614174001`
+  - GET:`localhost:8080/v1/question/site/football/user/123e4567-e89b-12d3-a456-426614174001`
+- To answer a question from user `123e4567-e89b-12d3-a456-426614174001`
+  - POST: `localhost:8080/v1/question/site/football/user/123e4567-e89b-12d3-a456-426614174001`
+  - Body:
+```text
+# Suppose it is the question 1, with answer option "Falcons"
+{
+    "questionId": 1,
+    "answers": {
+        "#": ["Falcons"]
+    }
+}
+```
+- To skip the current question from user `123e4567-e89b-12d3-a456-426614174001`
+  - PUT: `localhost:8080/v1/question/site/football/user/123e4567-e89b-12d3-a456-426614174001`
+
+
 # Security Concerns
 - There is no authentication module and no limitation on the frequency of requests a user can make, it will be easy to perform DDoS attack.
 - If using HTTP protocol, it will be easy to decode the protocol.
