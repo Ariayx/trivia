@@ -42,7 +42,7 @@ User cannot create or delete questions in database
 
 ## APIs
 
-### Request a new trivia
+### Request a new question
 
 GET `/v1/question/site/{siteName}/user/{userId}`
 
@@ -83,6 +83,7 @@ put question and answers in request data as a JSON format. If `questionType` is 
     }
 }
 ```
+If the question has a correct answer, and user gives the wrong one, a `false` will be returned. Otherwise, a`true`will be returned.
 
 | Return Code | Name            | Reason                                                                       |
 |-------------|-----------------|------------------------------------------------------------------------------|
@@ -92,42 +93,58 @@ put question and answers in request data as a JSON format. If `questionType` is 
 | 409         | CONFLICT        | When question id is not the one user should answer                           |
 | ???         | ???             | Other default exception handler provided by Spring                           |
 
-### Data Schema
+### Skip a question
+PUT `/v1/question/site/{siteName}/users/{userId}`
+The backend will mark the current question as skipped, and return a new question description to client.
+Return format would be the same as that in `Request a new question`
 
-#### Table Question
+## Data Schema
+
+### Table questions
 
 | Column name | type  | description                                |
 |-------------|-------|--------------------------------------------|
-| id          | long  | unique, Primary key                        |
+| id          | SERIAL| unique, Primary key                        |
 | type        | int   | 1: trivia; 2: poll; 3: checkbox; 4: matrix |
 | title       | TEXT  |                                            |
-| options     | array | The answers that user chooses from         |
-| headers     | array | Only works in matrix.                      |
 | answer      | TEXT  | empty string if no right answer            |
+Since headers and options are arrays, I store them in another table `question_options`
+
+
+### Table question_options
+
+| Column name | type    | description                       |
+|-------------|---------|-----------------------------------|
+| id          | SERIAL  | unique, Primary key               |
+| question_id | SERIAL  | Foreign key                       |
+| header      | Boolean | true: is header. false: is option |
+| option      | TEXT    | The string of header or option    |
+
 
 ### Table users
 
-| Column name         | type | description                                    |
-|---------------------|------|------------------------------------------------|
-| uuid                | UUID | the UUID of users                              |
-| answer_question_id  | long | The current question_id the user is answering. |
+| Column name         | type   | description                                    |
+|---------------------|--------|------------------------------------------------|
+| uuid                | UUID   | the UUID of users                              |
+| answer_question_id  | SERIAL | The current question_id the user is answering. |
 
 ### Table answers
 
-| Column name | type | description                                                           |
-|-------------|------|-----------------------------------------------------------------------|
-| answer_id   | long | The auto generated id, primary key                                    |
-| user_id     | UUID | user's UUID, Composite Primary Key                                    |
-| question_id | long | the question id, Composite Primary Key                                |
-| header      | text | the column name in `matrix` type. For other types, the filed is `'#'` |
-| answer      | text | chosen texts. multiple rows if multiple answers are chosen            |
+| Column name | type    | description                                                           |
+|-------------|---------|-----------------------------------------------------------------------|
+| answer_id   | long    | The auto generated id, primary key                                    |
+| user_id     | UUID    | user's UUID, Composite Primary Key                                    |
+| question_id | SERIAL  | the question id, Composite Primary Key                                |
+| header      | TEXT    | the column name in `matrix` type. For other types, the filed is `'#'` |
+| answer      | TEXT    | chosen texts. multiple rows if multiple answers are chosen            |
+| deleted     | BOOLEAN | If true, this answer is marked as deleted.                            |
 
 
 # Build and Run
 ## Create and import data to database
-1. Change database password or url in `database_script/importDb.py`, line 9 and line 18.
-2. Using python 3, and install package by command `pip install -r database_script/requirements.txt`
-3. Run python script to import data from csv to database `python database_script/importDb.py`
+1. Install and run a PostgreSQL database
+2. Create a database named `trivia`
+3. Import SQL script at `database_script/ImportData.sql`
 
 ## Change database configuration in Spring Boot project
 Change password or url in `src/main/resources/application.properties`
@@ -139,7 +156,18 @@ Or, you could try the following command line
 - On Linux/Mac: `./gradlew bootRun`
 
 # Security Concerns
-- There is no authentication module, it will be easy to perform DDoS attack.
-- If using HTTP protocol, it will be easy to decode the protocol
+- There is no authentication module and no limitation on the frequency of requests a user can make, it will be easy to perform DDoS attack.
+- If using HTTP protocol, it will be easy to decode the protocol.
 
 # Scalability
+The scalability could be considered from 2 aspects.
+ - Increase the volume of questions.
+   - If there are multiple sites, questions of different site can be stored in different table
+   - If one site has a large amount of questions, a further partition could be applied, e.g. split the questions into hard, medium and easy, or simply into section #.
+ - Increase the volume of users.
+   - UUID can be used to partition the database because of its natural randomness.
+   - Distributed system could be applied to enable expand elastically.
+     - A Message Queue could serve as a waiting line.
+     - Multiple workers could be defined to digest the requested data
+     - A cluster management and election strategy could be used to keep workers alive.
+     - A distributed database could be used if one database faces performance bottlenecks.
