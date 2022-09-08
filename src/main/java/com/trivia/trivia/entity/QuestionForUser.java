@@ -1,11 +1,14 @@
 package com.trivia.trivia.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class QuestionForUser {
-    public Long id;
+    public long id;
     public String type;
     public String title;
-    public String[] options;
-    public String[] headers;
+    public List<String> options;
+    public List<String> headers;
 
     public QuestionForUser() {
     }
@@ -14,15 +17,21 @@ public class QuestionForUser {
         this.id = questionEntity.id;
         this.type = questionEntity.type;
         this.title = questionEntity.title;
-        this.options = questionEntity.options.clone();
-        this.headers = questionEntity.headers.clone();
+        this.options = new ArrayList<>();
+        for(String s : questionEntity.options) {
+            this.options.add(s);
+        }
+        this.headers = new ArrayList<>();
+        for(String s : questionEntity.headers) {
+            this.headers.add(s);
+        }
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -42,19 +51,19 @@ public class QuestionForUser {
         this.title = title;
     }
 
-    public String[] getOptions() {
+    public List<String> getOptions() {
         return options;
     }
 
-    public void setOptions(String[] options) {
+    public void setOptions(List<String> options) {
         this.options = options;
     }
 
-    public String[] getHeaders() {
+    public List<String> getHeaders() {
         return headers;
     }
 
-    public void setHeaders(String[] headers) {
+    public void setHeaders(List<String> headers) {
         this.headers = headers;
     }
 }
