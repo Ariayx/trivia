@@ -89,8 +89,8 @@ public class QuestionController {
 
         // TODO: return the statistics of answer options
         // if the question contains answer
-        if (question.answer != null){
-            if (answer.answers.size() > 0 && answer.answers.get("#")[0] == question.answer){
+        if (question.answer != ""){
+            if (answer.answers.size() > 0 && question.answer.equals(answer.answers.get("#")[0])){
                 return new ResponseEntity<>(true, HttpStatus.OK);
             }
             return new ResponseEntity<>(false, HttpStatus.OK);

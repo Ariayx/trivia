@@ -98,6 +98,13 @@ PUT `/v1/question/site/{siteName}/users/{userId}`
 The backend will mark the current question as skipped, and return a new question description to client.
 Return format would be the same as that in `Request a new question`
 
+| Return Code | Name            | Reason                                                                                          |
+|-------------|-----------------|-------------------------------------------------------------------------------------------------|
+| 200         | OK              | When everything goes ok. A boolean will be returned indicate right or wrong.                    |
+| 501         | NOT_IMPLEMENTED | When client requests a site other than football                                                 |
+| 400         | BAD_REQUEST     | When request contains wrong parameter, or try to skip a question when no question is answering. |
+| ???         | ???             | Other default exception handler provided by Spring                                              |
+
 ## Data Schema
 
 ### Table questions
