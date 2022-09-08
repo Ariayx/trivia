@@ -1,6 +1,5 @@
 package com.trivia.trivia.service;
 
-import com.trivia.trivia.entity.QuestionEntity;
 import com.trivia.trivia.entity.UserEntity;
 
 import java.util.UUID;

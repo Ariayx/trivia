@@ -1,8 +1,6 @@
 package com.trivia.trivia.service.Impl;
 
-import com.trivia.trivia.entity.QuestionEntity;
 import com.trivia.trivia.entity.UserEntity;
-import com.trivia.trivia.repository.QuestionRepository;
 import com.trivia.trivia.repository.UserRepository;
 import com.trivia.trivia.service.UserService;
 import org.springframework.stereotype.Service;
