@@ -23,57 +23,63 @@ public class QuestionController {
         this.answerService = answerService;
     }
 
-    @GetMapping("site/{siteName}/user/{userId}")
+    @GetMapping("/site/{siteName}/user/{userId}")
     public ResponseEntity<?> getQuestionByUserId(@PathVariable("siteName") String site, @PathVariable("userId") UUID userId){
-        if (site != "football"){
+        if (! site.equals("football")){
             // currently not support
             return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
         }
+
         UserEntity user = userService.getUserById(userId);
-        QuestionEntity questionEntity;
+
         if(user == null || user.answerQuestionId == null){
-            questionEntity = questionService.getNewQuestion(userId);
+            QuestionEntity questionEntity = questionService.getNewQuestion(userId);
             user = new UserEntity(userId, questionEntity.id);
             userService.saveUser(user);
+            return new ResponseEntity<>(new QuestionForUser(questionEntity), HttpStatus.OK);
         } else {
-            questionEntity = questionService.getQuestionById(user.answerQuestionId.longValue());
+            QuestionEntity questionEntity = questionService.getQuestionById(user.answerQuestionId.longValue());
+            return new ResponseEntity<>(new QuestionForUser(questionEntity), HttpStatus.OK);
         }
-
-        return new ResponseEntity<>(new QuestionForUser(questionEntity), HttpStatus.OK);
     }
 
     private boolean saveUserAnswers(UUID userId, AnswerFromUser answer, Set<String> validAnswers){
-        List<AnswerEntity> userAnswers = new ArrayList<AnswerEntity>();
+        List<AnswerEntity> userAnswers = new ArrayList<>();
+        answerService.clearUserQuestionAnswers(userId, answer.questionId);
         for(Map.Entry<String, String[]> entry: answer.answers.entrySet()){
             String header = entry.getKey();
             String[] allAnswers = entry.getValue();
-            for (int i=0; i<allAnswers.length; i++ ){
-                if(validAnswers.contains(allAnswers[i])){
-                    userAnswers.add(new AnswerEntity(userId, answer.questionId, header, allAnswers[i]));
+            for (String ans : allAnswers){
+                if(validAnswers.contains(ans)){
+                    userAnswers.add(new AnswerEntity(userId, answer.questionId, header, ans, false));
                 } else {
                     return false;
                 }
             }
         }
-        answerService.saveAnswers(userAnswers);
+        answerService.saveAQuestionAnswers(userAnswers);
         return true;
     }
 
-    @PostMapping("site/{siteName}/user/{userId}")
+    @PostMapping("/site/{siteName}/user/{userId}")
     public ResponseEntity<?> receiveAnswer(@PathVariable("siteName") String site, @PathVariable("userId") UUID userId, @RequestBody AnswerFromUser answer){
-        if (site != "football"){
+        if (! site.equals("football")){
             // currently not support
             return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
         }
+
         QuestionEntity question = questionService.getQuestionById(answer.questionId);
         UserEntity user = userService.getUserById(userId);
+        if (question == null || user == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         if (question.id != user.answerQuestionId){
             // not the answering questions.
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
         // update answer info
-        if (! saveUserAnswers(userId, answer, new HashSet<String>(Arrays.asList(question.options)))){
+        if (! saveUserAnswers(userId, answer, new HashSet<String>(question.options))){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -92,5 +98,28 @@ public class QuestionController {
 
         // question doesn't contain answer
         return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @PutMapping("/site/{siteName}/user/{userId}")
+    public ResponseEntity<?> skipQuestion(@PathVariable("siteName") String site, @PathVariable("userId") UUID userId){
+        if (! site.equals("football")){
+            // currently not support
+            return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        }
+
+        UserEntity user = userService.getUserById(userId);
+        if (user == null || user.answerQuestionId == null){
+            // not the answering questions.
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // update answer info, mark the question as answered
+        answerService.saveAQuestionAnswer(new AnswerEntity(user.userId, user.answerQuestionId, "#", "Skip", false));
+
+        // find new valid question
+        QuestionEntity questionEntity = questionService.getNewQuestion(userId);
+        user.answerQuestionId = questionEntity.id;
+        userService.saveUser(user);
+        return new ResponseEntity<>(new QuestionForUser(questionEntity), HttpStatus.OK);
     }
 }
