@@ -24,14 +24,18 @@ public class AnswerEntity {
     @Column(name="answer")
     public String answer;
 
+    @Column(name="deleted")
+    public boolean deleted;
+
     public AnswerEntity(){
     }
 
-    public AnswerEntity(UUID userId, long questionId, String header, String answer) {
+    public AnswerEntity(UUID userId, long questionId, String header, String answer, boolean deleted) {
         this.userId = userId;
         this.questionId = questionId;
         this.header = header;
         this.answer = answer;
+        this.deleted = deleted;
     }
 
     public long getAnswerId() {
@@ -72,5 +76,17 @@ public class AnswerEntity {
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    public void setQuestionId(long questionId) {
+        this.questionId = questionId;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AnswerService {
-    AnswerEntity saveAnswer(AnswerEntity answer);
-    List<AnswerEntity> saveAnswers(List<AnswerEntity> answers);
-    void deleteAnswerByUserId(UUID uuid);
+    AnswerEntity saveAQuestionAnswer(AnswerEntity answer);
+    List<AnswerEntity> saveAQuestionAnswers(List<AnswerEntity> answers);
+    void deleteAnswerByUserId(UUID userId);
+    void clearUserQuestionAnswers(UUID userId, long questionId);
 }
